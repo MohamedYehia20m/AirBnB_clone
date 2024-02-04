@@ -20,6 +20,18 @@ class BaseModel:
             self.id: str = str(uuid.uuid4())
             self.created_at: datetime = datetime.datetime.now()
             self.updated_at: datetime = datetime.datetime.now()
+        else:
+            for key, value in kwargs.items():
+                if key in ["updated_at", "created_at"]:
+                    if isinstance(value, datetime.datetime):
+                        # If the value is already a datetime object, directly assign it
+                        time: datetime = value
+                    else:
+                        time_format: str = "%Y-%m-%dT%H:%M:%S.%f"
+                        time: datetime = datetime.datetime.strptime(value, time_format)
+                    setattr(self, key, time)
+                elif key != "__class__":
+                    setattr(self, key, value)
 
     def save(self):
         """updates the public instance attribute `updated_at` with the current datetime."""
