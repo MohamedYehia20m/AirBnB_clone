@@ -40,125 +40,134 @@ class HBNBCommand(cmd.Cmd):
 
 
 def do_create(self, arg):
-        """
-        Create a new instance of BaseModel, save it to the JSON file, and print the id.
-        """
-        if not arg:
-            print("** class name missing **")
-            return
+    """
+    Create a new instance of BaseModel, save it to the JSON file, and print the id.
+    Syntax: create <class_name>
+    """
+    args = arg.split()
 
-        try:
-            instance = eval(arg)()
-            instance.save()
-            print(instance.id)
-        except NameError:
-            print("** class doesn't exist **")
+    if not args or len(args) != 1:
+        print("** Incorrect syntax. Use: create <class_name> **")
+        return
+
+    class_name = args[0]
+
+    try:
+        instance = eval(class_name)()
+        instance.save()
+        print(instance.id)
+    except NameError:
+        print("** Class doesn't exist **")
 
 def do_show(self, arg):
-        """
-        Print the string representation of an instance based on the class name and id.
-        """
-        if not arg:
-            print("** class name missing **")
-            return
+    """
+    Print the string representation of an instance based on the class name and id.
+    Syntax: show <class_name> <id>
+    """
+    args = arg.split()
 
-        args = arg.split()
-        if args[0] not in globals():
-            print("** class doesn't exist **")
-            return
+    if not args or len(args) != 2:
+        print("** Incorrect syntax. Use: show <class_name> <id> **")
+        return
 
-        if len(args) < 2:
-            print("** instance id missing **")
-            return
+    class_name, instance_id = args
 
-        key = "{}.{}".format(args[0], args[1])
+    try:
+        instance = eval(class_name)()
+        key = "{}.{}".format(class_name, instance_id)
         objects = self.load_objects()
+
         if key not in objects:
-            print("** no instance found **")
+            print("** No instance found **")
         else:
             print(objects[key])
+    except NameError:
+        print("** Class doesn't exist **")
+
 
 def do_destroy(self, arg):
-        """
-        Deletes an instance based on the class name and id (saves the change into the JSON file).
-        """
-        if not arg:
-            print("** class name missing **")
-            return
+    """
+    Deletes an instance based on the class name and id (saves the change into the JSON file).
+    Syntax: destroy <class_name> <id>
+    """
+    args = arg.split()
 
-        args = arg.split()
-        if args[0] not in globals():
-            print("** class doesn't exist **")
-            return
+    if not args or len(args) != 2:
+        print("** Incorrect syntax. Use: destroy <class_name> <id> **")
+        return
 
-        if len(args) < 2:
-            print("** instance id missing **")
-            return
+    class_name, instance_id = args
 
-        key = "{}.{}".format(args[0], args[1])
+    try:
+        instance = eval(class_name)()
+        key = "{}.{}".format(class_name, instance_id)
         objects = self.load_objects()
+
         if key not in objects:
-            print("** no instance found **")
+            print("** No instance found **")
         else:
             del objects[key]
             self.save_objects(objects)
+    except NameError:
+        print("** Class doesn't exist **")
+
 
 def do_all(self, arg):
-        """
-        Print all string representations of all instances based or not on the class name.
-        """
-        objects = self.load_objects()
+    """
+    Print all string representations of all instances based or not on the class name.
+    Syntax: all [<class_name>]
+    """
+    args = arg.split()
+    objects = self.load_objects()
 
-        if arg:
-            if arg not in globals():
-                print("** class doesn't exist **")
-                return
+    if args and len(args) == 1:
+        class_name = args[0]
 
-            filtered_objects = {k: v for k, v in objects.items() if k.split('.')[0] == arg}
-            objects = filtered_objects
+        try:
+            eval(class_name)()
+            objects = {k: v for k, v in objects.items() if k.split('.')[0] == class_name}
+        except NameError:
+            print("** Class doesn't exist **")
 
-        print([str(obj) for obj in objects.values()])
+    print([str(obj) for obj in objects.values()])
+
 
 def do_update(self, arg):
-        """
-        Updates an instance based on the class name and id by adding or updating attribute.
-        """
-        if not arg:
-            print("** class name missing **")
-            return
+    """
+    Updates an instance based on the class name and id by adding or updating attribute.
+    Syntax: update <class_name> <id> <attribute_name> "<attribute_value>"
+    """
+    args = arg.split()
 
-        args = arg.split()
-        if args[0] not in globals():
-            print("** class doesn't exist **")
-            return
+    if not args or len(args) < 4 or len(args) % 2 != 0:
+        print("** Incorrect syntax. Use: update <class_name> <id> <attribute_name> '<attribute_value>' **")
+        return
 
-        if len(args) < 2:
-            print("** instance id missing **")
-            return
+    class_name, instance_id = args[:2]
 
-        key = "{}.{}".format(args[0], args[1])
+    try:
+        instance = eval(class_name)()
+        key = "{}.{}".format(class_name, instance_id)
         objects = self.load_objects()
+
         if key not in objects:
-            print("** no instance found **")
+            print("** No instance found **")
             return
 
-        if len(args) < 3:
-            print("** attribute name missing **")
-            return
+        for i in range(2, len(args), 2):
+            attribute_name, attribute_value = args[i], args[i + 1]
+            setattr(instance, attribute_name, attribute_value)
 
-        if len(args) < 4:
-            print("** value missing **")
-            return
-
-        attribute_name = args[3]
-        attribute_value = args[4]
-
-        instance = objects[key]
-        setattr(instance, attribute_name, attribute_value)
         instance.updated_at = datetime.now()
         self.save_objects(objects)
+    except NameError:
+        print("** Class doesn't exist **")
+
 
 def load_objects(self):
+        """
+        Load objects from the JSON file.
+        """
         try:
             with open("file.json", "r") as file:
                 return json.load(file)
@@ -166,6 +175,9 @@ def load_objects(self):
             return {}
 
 def save_objects(self, objects):
+        """
+        Save objects to the JSON file.
+        """
         with open("file.json", "w") as file:
             json.dump(objects, file)
 
