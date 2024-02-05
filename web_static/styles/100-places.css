@@ -1,0 +1,123 @@
+.places {
+        width: 100%;
+        text-align: center;
+}
+
+.places h1 {
+        font-size: 30px;
+        margin: 0;
+        padding: 20px 20px 0;
+        text-align: left;
+}
+
+.places article {
+        width: 390px;
+        padding: 20px;
+        margin: 20px;
+        border: #FF5A5F 1px solid;
+        border-radius: 4px;
+        display: inline-block;
+        position: relative;
+}
+
+.places article h2 {
+        font-size: 30px;
+        text-align: center;
+}
+
+.places article .price-by-night {
+        min-width: 70px;
+        height: 70px;
+        padding: 5px;
+        color: #FF5A5F;
+        font-size: 30px;
+        border: #FF5A5F 4px solid;
+        border-radius: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+}
+
+.places article .information {
+        height: 80px;
+        border-top: #DDDDDD 1px solid;
+        border-bottom: #DDDDDD 1px solid;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+}
+
+.places article .max-guest,
+.places article .number-rooms,
+.places article .number-bathrooms {
+        width: 100px;
+}
+
+.places article .max-guest i,
+.places article .number-rooms i,
+.places article .number-bathrooms i {
+        font-size: 23px;
+        padding-bottom: 5px;
+}
+
+.places article .user {
+        margin-top: 10px;
+}
+
+.places article .user,
+.places article .description {
+        text-align: left;
+        padding-top: 5px;
+}
+
+.places article .description {
+        line-height: 1.5;
+}
+
+.places article .amenities,
+.places article .reviews {
+        margin-top: 40px;
+}
+
+.places article .amenities h2,
+.places article .reviews h2 {
+        font-size: 16px;
+        margin: 0;
+        padding-bottom: 7px;
+        border-bottom: #DDDDDD 1px solid;
+        text-align: left;
+}
+
+.places article .amenities ul,
+.places article .reviews ul {
+        text-align: left;
+        padding-left: 0;
+}
+
+.places article .amenities ul li,
+.places article .reviews ul li {
+        margin-bottom: 7px;
+}
+
+.places article .amenities ul li i {
+        margin-right: 5px;
+}
+
+.places article .reviews ul h3 {
+        font-size: 14px;
+        margin: 0;
+}
+
+.places article .reviews ul p {
+        margin-top: 5px;
+        line-height: 1.5;
+        font-size: 12px;
+}
+
+
+footer {
+        position: relative;
+}
